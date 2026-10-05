@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="pwaBgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#14212b" />
+      <stop offset="100%" stop-color="#060a0e" />
+    </linearGradient>
+    <radialGradient id="pwaGlowAura" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#00E5FF" stop-opacity="0.35" />
+      <stop offset="60%" stop-color="#008B94" stop-opacity="0.08" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="pwaFolderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#00E5FF" />
+      <stop offset="45%" stop-color="#00B4D8" />
+      <stop offset="100%" stop-color="#005f69" />
+    </linearGradient>
+    <linearGradient id="pwaPsiGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFFFF" />
+      <stop offset="35%" stop-color="#E0FFFF" />
+      <stop offset="70%" stop-color="#00F0FF" />
+      <stop offset="100%" stop-color="#00C4CC" />
+    </linearGradient>
+    <linearGradient id="pwaPenGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#00F0FF" />
+      <stop offset="60%" stop-color="#0099A8" />
+      <stop offset="100%" stop-color="#005560" />
+    </linearGradient>
+    <filter id="pwaNeonGlow" x="-30%" y="-30%" width="160%" height="160%">
+      <feDropShadow dx="0" dy="3" stdDeviation="8" flood-color="#00E5FF" flood-opacity="0.7" />
+    </filter>
+    <filter id="pwaSoftShadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="5" stdDeviation="8" flood-color="#000000" flood-opacity="0.6" />
+    </filter>
+  </defs>
+
+  <!-- Full bleed background for Android maskable (no rounded corners so OS can mask safely) -->
+  <rect width="512" height="512" fill="url(#pwaBgGrad)" />
+  <rect width="512" height="512" fill="url(#pwaGlowAura)" />
+
+  <!-- Center Artwork scaled to fit comfortably inside the 409px (80%) safe zone -->
+  <g transform="translate(256, 256) scale(1.95) translate(-100, -98)">
+    <!-- 1. Clinical Prancheta (Folder Backplate) -->
+    <g filter="url(#pwaSoftShadow)">
+      <rect x="38" y="34" width="108" height="132" rx="18" fill="url(#pwaFolderGrad)" />
+      
+      <!-- Top Tab Projection -->
+      <path d="M50 34 C50 34, 58 24, 72 24 L104 24 C114 24, 122 34, 128 34 Z" fill="#00E5FF" opacity="0.9" />
+
+      <!-- Metallic Top Clip (Centered at X=92) -->
+      <g filter="url(#pwaNeonGlow)">
+        <rect x="70" y="18" width="44" height="22" rx="7" fill="#00E5FF" />
+        <rect x="83" y="24" width="18" height="6" rx="3" fill="#070c10" />
+      </g>
+
+      <!-- High-Contrast Sheet (Inner Document) -->
+      <rect x="46" y="46" width="92" height="108" rx="12" fill="#09131a" stroke="#00E5FF" stroke-width="1.8" stroke-opacity="0.45" />
+    </g>
+
+    <!-- 2. Attached Stylus / Pen (Right Edge) -->
+    <g id="pwaPen" filter="url(#pwaSoftShadow)">
+      <rect x="152" y="44" width="12" height="6" rx="2" fill="#00E5FF" />
+      <path d="M162 48 L166 48 C167 48, 168 50, 168 52 L168 76 C168 78, 167 80, 165 80 L162 80" fill="none" stroke="#00E5FF" stroke-width="2.2" stroke-linecap="round" />
+      <rect x="153" y="50" width="10" height="70" rx="3" fill="url(#pwaPenGrad)" />
+      <line x1="154" y1="102" x2="162" y2="102" stroke="#070c10" stroke-width="1.5" />
+      <line x1="154" y1="107" x2="162" y2="107" stroke="#070c10" stroke-width="1.5" />
+      <line x1="154" y1="112" x2="162" y2="112" stroke="#070c10" stroke-width="1.5" />
+      <path d="M153 120 L163 120 L158 132 Z" fill="#00E5FF" />
+      <circle cx="158" cy="134" r="1.5" fill="#FFFFFF" />
+    </g>
+
+    <!-- 3. Greek Psi Symbol (Ψ) — 100% SYMMETRICAL & CENTERED AT X=92 -->
+    <g filter="url(#pwaNeonGlow)">
+      <!-- Center Stem -->
+      <path d="M87 58 L97 58 L97 128 L104 128 L104 134 L80 134 L80 128 L87 128 Z" fill="url(#pwaPsiGrad)" />
+      <!-- Left & Right Curved U-Arms -->
+      <path d="M66 64 C66 64, 63 104, 92 104 C121 104, 118 64, 118 64 L109 64 C109 64, 110 94, 92 94 C74 94, 75 64, 75 64 Z" fill="url(#pwaPsiGrad)" />
+      <!-- Top Serifs -->
+      <rect x="63" y="62" width="14" height="4.5" rx="2" fill="#FFFFFF" />
+      <rect x="107" y="62" width="14" height="4.5" rx="2" fill="#FFFFFF" />
+      <rect x="85" y="56" width="14" height="4.5" rx="2" fill="#FFFFFF" />
+      <!-- Pedestal Base Accent -->
+      <rect x="78" y="132" width="28" height="4.5" rx="2" fill="#FFFFFF" opacity="0.9" />
+    </g>
+
+    <!-- Document Micro-Lines -->
+    <g stroke="#00E5FF" stroke-width="2" stroke-linecap="round" opacity="0.35">
+      <line x1="114" y1="116" x2="128" y2="116" />
+      <line x1="114" y1="124" x2="124" y2="124" />
+    </g>
+  </g>
+</svg>

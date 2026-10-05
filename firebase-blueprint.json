@@ -1,0 +1,166 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Clinical professional user profile",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Firebase user auth UID", "maxLength": 128 },
+        "email": { "type": "string", "description": "Email of the professional", "maxLength": 128 },
+        "nome": { "type": "string", "description": "Nome do profissional", "maxLength": 128 },
+        "registroProfissional": { "type": "string", "description": "Registro no conselho ou associação (ex: ABPp)", "maxLength": 64 },
+        "especialidade": { "type": "string", "description": "Especialidade clínica", "maxLength": 64 },
+        "createdAt": { "type": "string", "description": "Data de criação ISO", "maxLength": 64 },
+        "updatedAt": { "type": "string", "description": "Data de atualização ISO", "maxLength": 64 }
+      },
+      "required": ["id", "email", "nome", "createdAt", "updatedAt"]
+    },
+    "Aprendente": {
+      "title": "Aprendente",
+      "description": "Cadastro do aprendente ou paciente sob acompanhamento psicopedagógico",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único do aprendente", "maxLength": 128 },
+        "userId": { "type": "string", "description": "ID do profissional proprietário", "maxLength": 128 },
+        "codigoInterno": { "type": "string", "description": "Código interno identificador", "maxLength": 32 },
+        "nomeCompleto": { "type": "string", "description": "Nome completo do aprendente", "maxLength": 128 },
+        "nomeSocial": { "type": "string", "description": "Nome social se houver", "maxLength": 128 },
+        "dataNascimento": { "type": "string", "description": "Data de nascimento YYYY-MM-DD", "maxLength": 32 },
+        "idadeCalculada": { "type": "number", "description": "Idade calculada em anos" },
+        "status": { "type": "string", "description": "Status clínico", "enum": ["acompanhamento", "avaliacao", "pausado", "arquivado"] },
+        "contatoPreferencial": { "type": "string", "description": "Forma de contato preferencial", "maxLength": 128 },
+        "cidadeUf": { "type": "string", "description": "Cidade e UF", "maxLength": 64 },
+        "notasInternas": { "type": "string", "description": "Anotações do profissional", "maxLength": 2000 },
+        "createdAt": { "type": "string", "description": "Data de criação", "maxLength": 64 },
+        "updatedAt": { "type": "string", "description": "Data de atualização", "maxLength": 64 }
+      },
+      "required": ["id", "userId", "codigoInterno", "nomeCompleto", "dataNascimento", "status", "createdAt", "updatedAt"]
+    },
+    "Anamnese": {
+      "title": "Anamnese",
+      "description": "Registro clínico de anamnese psicopedagógica",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único da anamnese", "maxLength": 128 },
+        "userId": { "type": "string", "description": "ID do profissional proprietário", "maxLength": 128 },
+        "aprendenteId": { "type": "string", "description": "ID do aprendente", "maxLength": 128 },
+        "status": { "type": "string", "description": "Status do preenchimento", "enum": ["rascunho", "revisado", "finalizado"] },
+        "salvoEm": { "type": "string", "description": "Data do último salvamento", "maxLength": 64 },
+        "createdAt": { "type": "string", "description": "Data de criação", "maxLength": 64 },
+        "updatedAt": { "type": "string", "description": "Data de atualização", "maxLength": 64 }
+      },
+      "required": ["id", "userId", "aprendenteId", "status", "createdAt", "updatedAt"]
+    },
+    "Sessao": {
+      "title": "Sessao",
+      "description": "Registro de sessão de atendimento psicopedagógico",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único da sessão", "maxLength": 128 },
+        "userId": { "type": "string", "description": "ID do profissional proprietário", "maxLength": 128 },
+        "aprendenteId": { "type": "string", "description": "ID do aprendente", "maxLength": 128 },
+        "data": { "type": "string", "description": "Data da sessão YYYY-MM-DD", "maxLength": 32 },
+        "duracaoMinutos": { "type": "number", "description": "Duração em minutos" },
+        "modalidade": { "type": "string", "description": "Modalidade do atendimento", "enum": ["presencial_consultorio", "presencial_escola", "online"] },
+        "local": { "type": "string", "description": "Local do atendimento", "maxLength": 128 },
+        "objetivo": { "type": "string", "description": "Objetivo planejado para a sessão", "maxLength": 2000 },
+        "status": { "type": "string", "description": "Status da sessão", "enum": ["rascunho", "revisado", "finalizado"] },
+        "createdAt": { "type": "string", "description": "Data de criação", "maxLength": 64 },
+        "updatedAt": { "type": "string", "description": "Data de atualização", "maxLength": 64 }
+      },
+      "required": ["id", "userId", "aprendenteId", "data", "duracaoMinutos", "modalidade", "status", "createdAt", "updatedAt"]
+    },
+    "Avaliacao": {
+      "title": "Avaliacao",
+      "description": "Avaliação psicopedagógica e síntese diagnóstica",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único da avaliação", "maxLength": 128 },
+        "userId": { "type": "string", "description": "ID do profissional proprietário", "maxLength": 128 },
+        "aprendenteId": { "type": "string", "description": "ID do aprendente", "maxLength": 128 },
+        "perguntaObjetivo": { "type": "string", "description": "Questão clínica ou pedagógica", "maxLength": 2000 },
+        "periodoAvaliacao": { "type": "string", "description": "Período do processo de avaliação", "maxLength": 128 },
+        "status": { "type": "string", "description": "Status da avaliação", "enum": ["rascunho", "revisado", "finalizado"] },
+        "createdAt": { "type": "string", "description": "Data de criação", "maxLength": 64 },
+        "updatedAt": { "type": "string", "description": "Data de atualização", "maxLength": 64 }
+      },
+      "required": ["id", "userId", "aprendenteId", "status", "createdAt", "updatedAt"]
+    },
+    "Relatorio": {
+      "title": "Relatorio",
+      "description": "Relatório psicopedagógico estruturado e técnico",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID único do relatório", "maxLength": 128 },
+        "userId": { "type": "string", "description": "ID do profissional proprietário", "maxLength": 128 },
+        "aprendenteId": { "type": "string", "description": "ID do aprendente", "maxLength": 128 },
+        "titulo": { "type": "string", "description": "Título do documento", "maxLength": 256 },
+        "dataEmissao": { "type": "string", "description": "Data de emissão YYYY-MM-DD", "maxLength": 32 },
+        "status": { "type": "string", "description": "Status de revisão e conclusão", "enum": ["rascunho", "em_revisao", "finalizado"] },
+        "createdAt": { "type": "string", "description": "Data de criação", "maxLength": 64 },
+        "updatedAt": { "type": "string", "description": "Data de atualização", "maxLength": 64 }
+      },
+      "required": ["id", "userId", "aprendenteId", "titulo", "status", "createdAt", "updatedAt"]
+    },
+    "Lembrete": {
+      "title": "Lembrete",
+      "description": "Lembrete e alarme de consulta ou compromisso clínico",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "ID do lembrete", "maxLength": 128 },
+        "userId": { "type": "string", "description": "ID do profissional proprietário", "maxLength": 128 },
+        "aprendenteId": { "type": "string", "description": "ID do aprendente associado", "maxLength": 128 },
+        "titulo": { "type": "string", "description": "Título do lembrete", "maxLength": 128 },
+        "data": { "type": "string", "description": "Data do compromisso YYYY-MM-DD", "maxLength": 32 },
+        "horario": { "type": "string", "description": "Horário HH:mm", "maxLength": 16 },
+        "concluido": { "type": "boolean", "description": "Se foi concluído" },
+        "createdAt": { "type": "string", "description": "Data de criação", "maxLength": 64 },
+        "updatedAt": { "type": "string", "description": "Data de atualização", "maxLength": 64 }
+      },
+      "required": ["id", "userId", "titulo", "data", "horario", "concluido", "createdAt", "updatedAt"]
+    },
+    "TestConnection": {
+      "title": "TestConnection",
+      "description": "Healthcheck document for testing client connectivity",
+      "type": "object",
+      "properties": {
+        "status": { "type": "string", "description": "Status message", "maxLength": 64 }
+      },
+      "required": ["status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Clinical professional user profiles"
+    },
+    "/users/{userId}/aprendentes/{aprendenteId}": {
+      "schema": "Aprendente",
+      "description": "Learners under this professional"
+    },
+    "/users/{userId}/anamneses/{anamneseId}": {
+      "schema": "Anamnese",
+      "description": "Anamnesis forms for learners"
+    },
+    "/users/{userId}/sessoes/{sessaoId}": {
+      "schema": "Sessao",
+      "description": "Clinical sessions"
+    },
+    "/users/{userId}/avaliacoes/{avaliacaoId}": {
+      "schema": "Avaliacao",
+      "description": "Psychopedagogical evaluations"
+    },
+    "/users/{userId}/relatorios/{relatorioId}": {
+      "schema": "Relatorio",
+      "description": "Clinical reports and summaries"
+    },
+    "/users/{userId}/lembretes/{lembreteId}": {
+      "schema": "Lembrete",
+      "description": "Reminders and alerts"
+    },
+    "/test/connection": {
+      "schema": "TestConnection",
+      "description": "Connectivity test document"
+    }
+  }
+}

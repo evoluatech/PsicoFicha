@@ -1,0 +1,219 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // 1. Global Default-Deny Catch-All
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Connectivity Test
+    match /test/connection {
+      allow get: if isSignedIn();
+    }
+
+    // Global Hardened Helper Primitives
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // User Profile Validation Helper
+    function isValidUser(data) {
+      return data.keys().hasAll(['id', 'email', 'nome', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.email is string && data.email.size() <= 128 &&
+        data.nome is string && data.nome.size() <= 128 &&
+        (!('registroProfissional' in data) || (data.registroProfissional is string && data.registroProfissional.size() <= 64)) &&
+        (!('especialidade' in data) || (data.especialidade is string && data.especialidade.size() <= 64)) &&
+        data.createdAt is string && data.createdAt.size() <= 64 &&
+        data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    // Aprendente Validation Helper
+    function isValidAprendente(data, ownerId) {
+      return data.keys().hasAll(['id', 'userId', 'codigoInterno', 'nomeCompleto', 'dataNascimento', 'status', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId == ownerId &&
+        data.codigoInterno is string && data.codigoInterno.size() <= 32 &&
+        data.nomeCompleto is string && data.nomeCompleto.size() <= 128 &&
+        (!('nomeSocial' in data) || (data.nomeSocial is string && data.nomeSocial.size() <= 128)) &&
+        data.dataNascimento is string && data.dataNascimento.size() <= 32 &&
+        data.status in ['acompanhamento', 'avaliacao', 'pausado', 'arquivado'] &&
+        (!('contatoPreferencial' in data) || (data.contatoPreferencial is string && data.contatoPreferencial.size() <= 128)) &&
+        (!('cidadeUf' in data) || (data.cidadeUf is string && data.cidadeUf.size() <= 64)) &&
+        data.createdAt is string && data.createdAt.size() <= 64 &&
+        data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    // Anamnese Validation Helper
+    function isValidAnamnese(data, ownerId) {
+      return data.keys().hasAll(['id', 'userId', 'aprendenteId', 'status', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId == ownerId &&
+        data.aprendenteId is string && data.aprendenteId.size() <= 128 &&
+        data.status in ['rascunho', 'revisado', 'finalizado'] &&
+        data.createdAt is string && data.createdAt.size() <= 64 &&
+        data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    // Sessao Validation Helper
+    function isValidSessao(data, ownerId) {
+      return data.keys().hasAll(['id', 'userId', 'aprendenteId', 'data', 'duracaoMinutos', 'modalidade', 'status', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId == ownerId &&
+        data.aprendenteId is string && data.aprendenteId.size() <= 128 &&
+        data.data is string && data.data.size() <= 32 &&
+        data.duracaoMinutos is number && data.duracaoMinutos >= 0 && data.duracaoMinutos <= 480 &&
+        data.modalidade in ['presencial_consultorio', 'presencial_escola', 'online'] &&
+        data.status in ['rascunho', 'revisado', 'finalizado'] &&
+        (!('local' in data) || (data.local is string && data.local.size() <= 128)) &&
+        data.createdAt is string && data.createdAt.size() <= 64 &&
+        data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    // Avaliacao Validation Helper
+    function isValidAvaliacao(data, ownerId) {
+      return data.keys().hasAll(['id', 'userId', 'aprendenteId', 'status', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId == ownerId &&
+        data.aprendenteId is string && data.aprendenteId.size() <= 128 &&
+        data.status in ['rascunho', 'revisado', 'finalizado'] &&
+        data.createdAt is string && data.createdAt.size() <= 64 &&
+        data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    // Relatorio Validation Helper
+    function isValidRelatorio(data, ownerId) {
+      return data.keys().hasAll(['id', 'userId', 'aprendenteId', 'titulo', 'status', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId == ownerId &&
+        data.aprendenteId is string && data.aprendenteId.size() <= 128 &&
+        data.titulo is string && data.titulo.size() <= 256 &&
+        data.status in ['rascunho', 'em_revisao', 'finalizado'] &&
+        data.createdAt is string && data.createdAt.size() <= 64 &&
+        data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    // Lembrete Validation Helper
+    function isValidLembrete(data, ownerId) {
+      return data.keys().hasAll(['id', 'userId', 'titulo', 'data', 'horario', 'concluido', 'createdAt', 'updatedAt']) &&
+        data.id is string && data.id.size() <= 128 &&
+        data.userId == ownerId &&
+        data.titulo is string && data.titulo.size() <= 128 &&
+        data.data is string && data.data.size() <= 32 &&
+        data.horario is string && data.horario.size() <= 16 &&
+        data.concluido is bool &&
+        data.createdAt is string && data.createdAt.size() <= 64 &&
+        data.updatedAt is string && data.updatedAt.size() <= 64;
+    }
+
+    // User Resource Rules
+    match /users/{userId} {
+      allow get: if isOwner(userId) && isValidId(userId);
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUser(incoming()) && incoming().id == userId;
+      allow update: if isOwner(userId) && isValidId(userId) && isValidUser(incoming()) &&
+        incoming().id == existing().id &&
+        incoming().createdAt == existing().createdAt;
+      allow delete: if false;
+
+      // Aprendentes Subcollection
+      match /aprendentes/{aprendenteId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId) && isValidId(aprendenteId);
+        allow create: if isOwner(userId) && isValidId(aprendenteId) && isValidAprendente(incoming(), userId) &&
+          incoming().id == aprendenteId &&
+          incoming().userId == userId;
+        allow update: if isOwner(userId) && isValidId(aprendenteId) && isValidAprendente(incoming(), userId) &&
+          incoming().id == existing().id &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt;
+        allow delete: if isOwner(userId) && isValidId(aprendenteId);
+      }
+
+      // Anamneses Subcollection
+      match /anamneses/{anamneseId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId) && isValidId(anamneseId);
+        allow create: if isOwner(userId) && isValidId(anamneseId) && isValidAnamnese(incoming(), userId) &&
+          incoming().id == aprendenteId &&
+          incoming().userId == userId;
+        allow update: if isOwner(userId) && isValidId(anamneseId) && isValidAnamnese(incoming(), userId) &&
+          incoming().id == existing().id &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt;
+        allow delete: if isOwner(userId) && isValidId(anamneseId);
+      }
+
+      // Sessoes Subcollection
+      match /sessoes/{sessaoId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId) && isValidId(sessaoId);
+        allow create: if isOwner(userId) && isValidId(sessaoId) && isValidSessao(incoming(), userId) &&
+          incoming().id == sessaoId &&
+          incoming().userId == userId;
+        allow update: if isOwner(userId) && isValidId(sessaoId) && isValidSessao(incoming(), userId) &&
+          incoming().id == existing().id &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt;
+        allow delete: if isOwner(userId) && isValidId(sessaoId);
+      }
+
+      // Avaliacoes Subcollection
+      match /avaliacoes/{avaliacaoId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId) && isValidId(avaliacaoId);
+        allow create: if isOwner(userId) && isValidId(avaliacaoId) && isValidAvaliacao(incoming(), userId) &&
+          incoming().id == avaliacaoId &&
+          incoming().userId == userId;
+        allow update: if isOwner(userId) && isValidId(avaliacaoId) && isValidAvaliacao(incoming(), userId) &&
+          incoming().id == existing().id &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt;
+        allow delete: if isOwner(userId) && isValidId(avaliacaoId);
+      }
+
+      // Relatorios Subcollection
+      match /relatorios/{relatorioId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId) && isValidId(relatorioId);
+        allow create: if isOwner(userId) && isValidId(relatorioId) && isValidRelatorio(incoming(), userId) &&
+          incoming().id == relatorioId &&
+          incoming().userId == userId;
+        allow update: if isOwner(userId) && isValidId(relatorioId) && isValidRelatorio(incoming(), userId) &&
+          incoming().id == existing().id &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt;
+        allow delete: if isOwner(userId) && isValidId(relatorioId);
+      }
+
+      // Lembretes Subcollection
+      match /lembretes/{lembreteId} {
+        allow list: if isOwner(userId);
+        allow get: if isOwner(userId) && isValidId(lembreteId);
+        allow create: if isOwner(userId) && isValidId(lembreteId) && isValidLembrete(incoming(), userId) &&
+          incoming().id == lembreteId &&
+          incoming().userId == userId;
+        allow update: if isOwner(userId) && isValidId(lembreteId) && isValidLembrete(incoming(), userId) &&
+          incoming().id == existing().id &&
+          incoming().userId == existing().userId &&
+          incoming().createdAt == existing().createdAt;
+        allow delete: if isOwner(userId) && isValidId(lembreteId);
+      }
+    }
+  }
+}
