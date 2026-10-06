@@ -9,7 +9,6 @@ import {
   AlertCircle,
   Plus,
   Trash2,
-  ShieldAlert,
   Save,
   School,
   UserCheck
@@ -474,14 +473,6 @@ export const AprendenteFormView: React.FC<AprendenteFormViewProps> = ({
                 <Plus className="w-3.5 h-3.5" />
                 <span>Adicionar Mais um Responsável</span>
               </button>
-            </div>
-
-            {/* Minimização LGPD Banner — Escuro no tema Dark */}
-            <div className="bg-[#f0f8f8] dark:bg-[#0c1822] border border-[#d4ecec] dark:border-[#193240] rounded-xl p-3.5 flex items-start gap-2.5 text-xs text-[#183238] dark:text-[#a0c0c6] transition-colors">
-              <ShieldAlert className="w-4 h-4 text-[#176B73] dark:text-[#00E5FF] shrink-0 mt-0.5" />
-              <p className="leading-relaxed">
-                <strong className="text-[#183238] dark:text-white">Minimização de Dados:</strong> Colete apenas os contatos estritamente necessários para a condução do acompanhamento psicopedagógico e comunicações de emergência.
-              </p>
             </div>
 
             {responsaveis.map((resp, idx) => (

@@ -202,8 +202,8 @@ export const AuthModal: React.FC<AuthModalProps> = ({
               </h2>
             </div>
             <p className="text-xs text-slate-500 dark:text-slate-400">
-              {mode === 'login' && 'Acesse seus prontuários e sincronize com a nuvem segura do Psicoficha.'}
-              {mode === 'register' && 'Cadastre-se para armazenar seus dados com segurança na nuvem.'}
+              {mode === 'login' && 'Acesse seus prontuários e sincronize com a nuvem do Psicoficha.'}
+              {mode === 'register' && 'Cadastre-se para sincronizar seus prontuários na nuvem.'}
               {mode === 'forgot' && 'Digite seu e-mail para receber as instruções de recuperação.'}
             </p>
           </div>

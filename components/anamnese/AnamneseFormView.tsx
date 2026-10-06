@@ -8,7 +8,6 @@ import {
   Clock,
   ArrowLeft,
   CheckCircle2,
-  ShieldAlert,
   FileSpreadsheet,
   AlertCircle,
   HelpCircle,
@@ -219,10 +218,9 @@ export const AnamneseFormView: React.FC<AnamneseFormViewProps> = ({
             <div className="flex items-center gap-1.5 text-[#52676B]">
               <Clock className="w-3.5 h-3.5 text-[#238B8D]" />
               <span>
-                {salvando ? 'Salvando localmente...' : ultimoSalvoHora ? `Salvo às ${ultimoSalvoHora}` : 'Autosave ativo'}
+                {salvando ? 'Salvando...' : ultimoSalvoHora ? `Salvo às ${ultimoSalvoHora}` : 'Autosave ativo'}
               </span>
             </div>
-            <span className="text-[10px] text-[#8a9d9f]">Persistência local segura</span>
           </div>
 
           <button
@@ -330,15 +328,6 @@ export const AnamneseFormView: React.FC<AnamneseFormViewProps> = ({
               {/* Collapsible Body */}
               {aberta && (
                 <div className="p-5 pt-0 border-t border-[#EEF5F4] bg-[#F7FAFA]/40 space-y-4">
-                  {item.sensivel && (
-                    <div className="bg-amber-50 dark:bg-[#1a1612] border border-amber-200 dark:border-amber-500/30 rounded-xl p-3 flex items-center gap-2 text-xs text-amber-900 dark:text-amber-300">
-                      <ShieldAlert className="w-4 h-4 shrink-0 text-amber-600 dark:text-amber-400" />
-                      <span>
-                        Informações de saúde e medicamentos exigem especial zelo e minimização de exposição.
-                      </span>
-                    </div>
-                  )}
-
                   <div>
                     <label className="block text-xs font-semibold text-[#176B73] mb-1">
                       Relato dos Responsáveis / Família
@@ -453,7 +442,7 @@ export const AnamneseFormView: React.FC<AnamneseFormViewProps> = ({
         tipo="excluir"
         titulo="Excluir Anamnese Psicopedagógica"
         itemIdentificador={`Anamnese de ${aprendente?.nomeCompleto || ''}`}
-        mensagemExtra="Os dados deste formulário serão transferidos para a lixeira de segurança e poderão ser restaurados nas Configurações se necessário."
+        mensagemExtra="Este formulário será movido para a lixeira e poderá ser restaurado nas Configurações se necessário."
       />
     </div>
   );

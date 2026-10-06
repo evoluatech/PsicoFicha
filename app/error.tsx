@@ -24,7 +24,7 @@ export default function ErrorBoundary({
         Ops, algo inesperado ocorreu
       </h1>
       <p className="text-xs sm:text-sm text-[#8da4ac] max-w-md mb-6 leading-relaxed">
-        Não se preocupe: todos os seus dados clínicos salvos no dispositivo continuam preservados com segurança.
+        Não se preocupe: todos os seus dados clínicos continuam preservados.
       </p>
       <div className="flex flex-wrap items-center justify-center gap-3">
         <button

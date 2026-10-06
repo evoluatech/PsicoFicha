@@ -12,7 +12,7 @@ export default function NotFound() {
       </div>
       <h1 className="text-3xl font-extrabold tracking-tight text-white mb-2">Página não encontrada</h1>
       <p className="text-xs sm:text-sm text-[#8da4ac] max-w-md mb-6">
-        O endereço solicitado não existe ou foi movido. Você pode retornar à tela principal com segurança.
+        O endereço solicitado não existe ou foi movido. Você pode retornar à tela principal.
       </p>
       <Link
         href="/"

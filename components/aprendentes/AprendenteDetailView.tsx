@@ -1243,7 +1243,7 @@ export const AprendenteDetailView: React.FC<AprendenteDetailViewProps> = ({
         tipo="excluir"
         titulo="Excluir Sessão da Linha do Tempo"
         itemIdentificador={`Sessão do dia ${modalExcluirSessao.sessao?.data || ''}`}
-        mensagemExtra="Esta sessão será transferida para a lixeira de segurança."
+        mensagemExtra="Esta sessão será transferida para a lixeira."
       />
 
       {/* Modal de Exclusão de Paciente (Aprendente) */}
@@ -1276,7 +1276,7 @@ export const AprendenteDetailView: React.FC<AprendenteDetailViewProps> = ({
         tipo="excluir"
         titulo={`Excluir ${modalExcluirFormulario.tipo === 'anamnese' ? 'Anamnese' : 'Avaliação'}`}
         itemIdentificador={`${modalExcluirFormulario.tipo === 'anamnese' ? 'Anamnese' : 'Avaliação'} de ${aprendente?.nomeCompleto || ''}`}
-        mensagemExtra="Os dados deste formulário serão movidos para a lixeira de segurança."
+        mensagemExtra="Os dados deste formulário serão movidos para a lixeira."
       />
     </div>
   );

@@ -11,7 +11,6 @@ import {
   Wifi,
   WifiOff,
   ChevronRight,
-  ShieldCheck,
   Search,
   Menu,
   X,
@@ -208,7 +207,7 @@ export const AppShell: React.FC<AppShellProps> = ({
     } else if (currentRoute === 'lembretes') {
       crumbs.push({ label: 'Agenda & Lembretes', route: 'lembretes' });
     } else if (currentRoute === 'configuracoes') {
-      crumbs.push({ label: 'Configurações & Privacidade', route: 'configuracoes' });
+      crumbs.push({ label: 'Configurações', route: 'configuracoes' });
     } else if (currentRoute === 'offline') {
       crumbs.push({ label: 'Modo Offline', route: 'offline' });
     }
@@ -224,32 +223,6 @@ export const AppShell: React.FC<AppShellProps> = ({
           onNavigate('lembretes', { id });
         }}
       />
-
-      {/* Top Ethics & Privacy Banner */}
-      <div
-        className={`px-3 sm:px-4 py-1 text-[11px] sm:text-xs flex items-center justify-between no-print z-30 border-b transition-colors overflow-hidden shrink-0 ${
-          isDark
-            ? 'bg-[#060a0d] text-[#8da4ac] border-[#141e27]'
-            : 'bg-slate-200/70 text-slate-700 border-slate-300/80'
-        }`}
-      >
-        <div className="flex items-center gap-1.5 sm:gap-2 min-w-0 truncate">
-          <ShieldCheck className={`w-3.5 h-3.5 shrink-0 ${isDark ? 'text-[#00E5FF]' : 'text-[#007a82]'}`} />
-          <span className="truncate text-[10px] sm:text-xs">
-            <strong className={isDark ? 'text-white' : 'text-slate-900 font-bold'}>
-              Ambiente Seguro:
-            </strong>{' '}
-            Registros clínicos com isolamento no dispositivo.
-          </span>
-        </div>
-        <div className="flex items-center gap-2 shrink-0 text-[10px] sm:text-[11px] ml-2">
-          <span className="hidden md:inline">Armazenamento Local Ativo</span>
-          <span
-            title={firebaseConnected ? 'Nuvem sincronizada' : 'Modo local seguro'}
-            className={`w-2 h-2 rounded-full shrink-0 ${isDark ? 'bg-[#00E5FF]' : 'bg-[#008B94]'}`}
-          />
-        </div>
-      </div>
 
       <div className="flex-1 flex min-h-0 overflow-hidden">
         {/* Desktop Sidebar (260px wide) */}

@@ -16,16 +16,8 @@ import {
   LogIn,
   LogOut,
   Database,
-  ShieldCheck,
   Mail,
   UserPlus,
-  Download,
-  Upload,
-  Trash2,
-  RotateCcw,
-  FileJson,
-  HardDrive,
-  AlertTriangle,
 } from 'lucide-react';
 import { storage } from '@/lib/storage';
 import { ConfiguracoesApp } from '@/types';
@@ -61,18 +53,10 @@ export const ConfiguracoesView: React.FC<ConfiguracoesViewProps> = () => {
   const [cidade, setCidade] = useState('São Paulo - SP');
   const [especialidade, setEspecialidade] = useState('Psicopedagogia Clínica & Institucional');
   const [telefone, setTelefone] = useState('(11) 98765-4321');
-  const [storageUsage, setStorageUsage] = useState({ usadoKb: 0, percentualEstimado: 0 });
-  const [lixeira, setLixeira] = useState<Array<{ tipo: string; id: string; titulo: string; removidoEm: string }>>([]);
-
-  const carregarDadosSeguranca = () => {
-    setStorageUsage(storage.getStorageUsage());
-    setLixeira(storage.getLixeira());
-  };
 
   useEffect(() => {
     const atual = storage.getConfiguracoes();
     setConfig(atual);
-    carregarDadosSeguranca();
 
     // Carregar dados salvos do profissional
     const prof = storage.getProfissional();
@@ -85,68 +69,6 @@ export const ConfiguracoesView: React.FC<ConfiguracoesViewProps> = () => {
       if (prof.telefone) setTelefone(prof.telefone);
     }
   }, []);
-
-  const handleExportarBackup = () => {
-    try {
-      const json = storage.exportarBackupJson();
-      const blob = new Blob([json], { type: 'application/json' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      const dataIso = new Date().toISOString().split('T')[0];
-      a.href = url;
-      a.download = `psicoficha_backup_completo_${dataIso}.json`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-      showToast('Cópia de segurança JSON exportada com sucesso!', 'sucesso');
-    } catch {
-      showToast('Erro ao exportar backup de dados.', 'erro');
-    }
-  };
-
-  const handleImportarArquivo = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const conteudo = event.target?.result as string;
-      if (!conteudo) return;
-      const ok = storage.importarBackupJson(conteudo);
-      if (ok) {
-        carregarDadosSeguranca();
-        showToast('Backup importado com sucesso! Todos os prontuários foram restaurados.', 'sucesso');
-      } else {
-        showToast('Arquivo JSON de backup inválido ou corrompido.', 'erro');
-      }
-    };
-    reader.readAsText(file);
-    e.target.value = '';
-  };
-
-  const handleRestaurarDaLixeira = (id: string, titulo: string) => {
-    const ok = storage.restoreFromLixeira(id);
-    if (ok) {
-      carregarDadosSeguranca();
-      showToast(`"${titulo}" restaurado com sucesso!`, 'sucesso');
-    } else {
-      showToast('Não foi possível restaurar o item.', 'erro');
-    }
-  };
-
-  const handleEsvaziarLixeira = () => {
-    storage.emptyLixeira();
-    carregarDadosSeguranca();
-    showToast('Lixeira esvaziada com sucesso.', 'info');
-  };
-
-  const handleRestaurarDemonstracao = () => {
-    if (window.confirm('Deseja recarregar os dados demonstrativos padrão da clínica? Dados locais não sincronizados serão substituídos.')) {
-      storage.restaurarDadosDemonstracao();
-      carregarDadosSeguranca();
-      showToast('Dados de demonstração restaurados com sucesso!', 'sucesso');
-    }
-  };
 
   const handleSalvarConfig = (campo: keyof ConfiguracoesApp, valor: any) => {
     if (campo === 'tema') {
@@ -486,7 +408,7 @@ export const ConfiguracoesView: React.FC<ConfiguracoesViewProps> = () => {
         </div>
 
         <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-          O Psicoficha conta com sincronização segura e contínua em nuvem com regras rigorosas de controle de acesso. Todos os dados clínicos e prontuários permanecem confidenciais, protegidos por criptografia e acessíveis exclusivamente na sua conta profissional.
+          Sincronize seus prontuários e atendimentos em nuvem para acessar em qualquer computador ou dispositivo.
         </p>
 
         {user ? (
@@ -579,11 +501,11 @@ export const ConfiguracoesView: React.FC<ConfiguracoesViewProps> = () => {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
               <div>
                 <p className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" />
+                  <Cloud className="w-4 h-4 text-teal-600 dark:text-[#00E5FF]" />
                   <span>Sincronização em Nuvem Desconectada</span>
                 </p>
                 <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                  Conecte sua conta do Google (Gmail) ou entre com e-mail e senha para salvar prontuários com segurança na nuvem e sincronizar entre seus dispositivos.
+                  Conecte sua conta do Google (Gmail) ou entre com e-mail e senha para salvar prontuários na nuvem e sincronizar entre seus dispositivos.
                 </p>
               </div>
             </div>
@@ -646,127 +568,6 @@ export const ConfiguracoesView: React.FC<ConfiguracoesViewProps> = () => {
             </div>
           </div>
         )}
-      </div>
-
-      {/* 5. Segurança, Backup Local & Recuperação de Dados */}
-      <div className="rounded-2xl border p-5 sm:p-6 space-y-4 transition-colors bg-white dark:bg-[#121c25] border-slate-200 dark:border-[#1e2d3b] shadow-xs">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
-            <HardDrive className="w-4 h-4 text-[#008B94] dark:text-[#00E5FF]" />
-            <span>Segurança de Dados, Backup &amp; Recuperação</span>
-          </h2>
-          <span className="text-[11px] font-mono text-slate-500 dark:text-slate-400">
-            {storageUsage.usadoKb} KB usados (~{storageUsage.percentualEstimado}% do espaço seguro)
-          </span>
-        </div>
-
-        <p className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
-          Proteja seus prontuários e históricos clínicos contra perdas acidentais, limpeza de navegador ou troca de computador. Exporte arquivos de backup em JSON ou restaure prontuários a qualquer momento.
-        </p>
-
-        {/* Action Buttons: Exportar e Importar */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
-          <button
-            type="button"
-            onClick={handleExportarBackup}
-            className="p-3.5 rounded-xl border border-slate-200 dark:border-[#1e2d3b] bg-slate-50 dark:bg-[#0b1015] hover:bg-slate-100 dark:hover:bg-[#16232e] text-slate-800 dark:text-white transition-all flex items-center gap-3 text-left shadow-xs"
-          >
-            <div className="w-9 h-9 rounded-xl bg-teal-100 dark:bg-[#00E5FF]/20 text-[#008B94] dark:text-[#00E5FF] flex items-center justify-center shrink-0">
-              <Download className="w-4 h-4" />
-            </div>
-            <div>
-              <span className="font-bold text-xs block text-slate-900 dark:text-white">Exportar Cópia Completa (JSON)</span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">Baixar arquivo de segurança de todos os pacientes</span>
-            </div>
-          </button>
-
-          <label className="p-3.5 rounded-xl border border-slate-200 dark:border-[#1e2d3b] bg-slate-50 dark:bg-[#0b1015] hover:bg-slate-100 dark:hover:bg-[#16232e] text-slate-800 dark:text-white transition-all flex items-center gap-3 cursor-pointer shadow-xs">
-            <div className="w-9 h-9 rounded-xl bg-emerald-100 dark:bg-emerald-950/60 text-emerald-700 dark:text-emerald-400 flex items-center justify-center shrink-0">
-              <Upload className="w-4 h-4" />
-            </div>
-            <div>
-              <span className="font-bold text-xs block text-slate-900 dark:text-white">Restaurar Cópia (Importar JSON)</span>
-              <span className="text-[11px] text-slate-500 dark:text-slate-400">Recarregar dados a partir de arquivo salvo</span>
-            </div>
-            <input
-              type="file"
-              accept=".json,application/json"
-              onChange={handleImportarArquivo}
-              className="hidden"
-            />
-          </label>
-        </div>
-
-        {/* Lixeira & Recuperação de Excluídos */}
-        <div className="pt-3 border-t border-slate-200/80 dark:border-[#1e2d3b] space-y-3">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
-                <Trash2 className="w-3.5 h-3.5 text-slate-500" />
-                <span>Lixeira de Segurança (Anti-Exclusão Acidental)</span>
-              </h3>
-              <p className="text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">
-                Itens removidos ficam preservados aqui e podem ser recuperados com 1 clique.
-              </p>
-            </div>
-            {lixeira.length > 0 && (
-              <button
-                type="button"
-                onClick={handleEsvaziarLixeira}
-                className="text-[11px] font-semibold text-rose-600 dark:text-rose-400 hover:underline"
-              >
-                Esvaziar Lixeira
-              </button>
-            )}
-          </div>
-
-          {lixeira.length === 0 ? (
-            <div className="p-3 text-center rounded-xl bg-slate-50 dark:bg-[#0b1015] text-[11px] text-slate-500 dark:text-slate-400 border border-dashed border-slate-200 dark:border-[#1e2d3b]">
-              Nenhum registro na lixeira. Todos os prontuários e relatórios estão ativos.
-            </div>
-          ) : (
-            <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
-              {lixeira.map((item) => (
-                <div
-                  key={item.id}
-                  className="flex items-center justify-between p-2.5 rounded-xl border border-slate-200 dark:border-[#1e2d3b] bg-slate-50 dark:bg-[#0b1015] text-xs"
-                >
-                  <div className="min-w-0 pr-2">
-                    <span className="font-semibold text-slate-900 dark:text-white truncate block">
-                      {item.titulo}
-                    </span>
-                    <span className="text-[10px] text-slate-500 dark:text-slate-400 capitalize">
-                      Tipo: {item.tipo} · Excluído em: {new Date(item.removidoEm).toLocaleDateString('pt-BR')}
-                    </span>
-                  </div>
-                  <button
-                    type="button"
-                    onClick={() => handleRestaurarDaLixeira(item.id, item.titulo)}
-                    className="px-2.5 py-1 text-xs font-semibold text-[#008B94] dark:text-[#00E5FF] hover:bg-teal-50 dark:hover:bg-[#182633] rounded-lg transition-colors flex items-center gap-1 shrink-0"
-                  >
-                    <RotateCcw className="w-3 h-3" />
-                    <span>Restaurar</span>
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-        </div>
-
-        {/* Reset Demo Data */}
-        <div className="pt-3 border-t border-slate-200/80 dark:border-[#1e2d3b] flex items-center justify-between text-xs">
-          <div>
-            <span className="font-semibold text-slate-800 dark:text-slate-200 block">Recarregar Dados Demonstrativos</span>
-            <span className="text-[11px] text-slate-500 dark:text-slate-400">Restaura fichas e relatórios padrão de exemplo da clínica</span>
-          </div>
-          <button
-            type="button"
-            onClick={handleRestaurarDemonstracao}
-            className="px-3 py-1.5 text-xs font-medium text-slate-600 dark:text-slate-300 hover:text-slate-900 dark:hover:text-white bg-slate-100 dark:bg-[#182633] hover:bg-slate-200 dark:hover:bg-[#203444] rounded-xl transition-colors"
-          >
-            Restaurar Demo
-          </button>
-        </div>
       </div>
     </div>
   );

@@ -9,7 +9,6 @@ import {
   AlertCircle,
   HelpCircle,
   Sparkles,
-  ShieldCheck,
   Trash2,
 } from 'lucide-react';
 import { storage } from '@/lib/storage';
@@ -129,17 +128,6 @@ export const AvaliacaoView: React.FC<AvaliacaoViewProps> = ({
             <Save className="w-4 h-4" />
             <span>Finalizar Avaliação</span>
           </button>
-        </div>
-      </div>
-
-      {/* Ética e Neutralidade Banner */}
-      <div className="bg-[#f0f8f8] dark:bg-[#0c1822] border border-[#d4ecec] dark:border-[#193240] rounded-2xl p-4 flex items-start gap-3 text-xs text-[#183238] dark:text-[#a0c0c6] transition-colors">
-        <ShieldCheck className="w-5 h-5 text-[#176B73] dark:text-[#00E5FF] shrink-0 mt-0.5" />
-        <div className="leading-relaxed space-y-1">
-          <p className="font-bold text-[#176B73] dark:text-[#00E5FF]">Princípio da Descrição Qualitativa</p>
-          <p className="text-[#52676B] dark:text-[#8da4ac]">
-            Esta avaliação documenta evidências observadas durante as sessões e propostas de intervenção pedagógica. Não gera rótulos automáticos nem substitui avaliações neurológicas ou médicas especializadas.
-          </p>
         </div>
       </div>
 
@@ -371,7 +359,7 @@ export const AvaliacaoView: React.FC<AvaliacaoViewProps> = ({
         tipo="excluir"
         titulo="Excluir Avaliação Psicopedagógica"
         itemIdentificador={`Avaliação de ${aprendente?.nomeCompleto || ''}`}
-        mensagemExtra="Os dados deste formulário serão transferidos para a lixeira de segurança e poderão ser restaurados nas Configurações se necessário."
+        mensagemExtra="Este formulário será movido para a lixeira e poderá ser restaurado nas Configurações se necessário."
       />
     </div>
   );
